@@ -269,7 +269,26 @@ class Person {
 }
 
 const p = new Person("Sameer", 22);
-console.log(p.name, p.age); // Sameer 22
+console.log(p.name, p.age);  Sameer 22
+
+Copy Constructor (conceptual, not native in JS)
+Used to create a new object from an existing object
+JavaScript doesn’t support it directly, but we can simulate it
+
+Constructor overloading?
+Same class has multiple constructors with different parameters.
+
+class Person {
+    String name;
+    
+     Person() {
+        console.log("Sameer)
+    }
+    
+    Person(String name) {
+        this.name = name;
+    }
+}
 
 ==============================================================================================================================
 
@@ -311,22 +330,30 @@ const c = new Cat();
 d.speak();  Dog barks
 c.speak();  Cat speaks
 
+==============================================================================================================================
+
 What is the difference between class and object?
-classes are the blueprient and object are there instance.
-class student {
-constractor(name , age , roll){
-this.name = name
-this.age = age
-this.roll = rool
-}
-}
-const stu = new student ("sameer" , 24 , F279)
 
+classes are the blueprient(Template) and object are there instance(single occurrence of something.).
 
-What is composition vs inheritance? Which is better and why?'
+class Student {
+
+   constractor(name , age , roll){
+      this.name = name
+      this.age = age
+      this.roll = rool
+   }
+}
+const s = new Student ("Sameer" , 24 , F279)
+
+==============================================================================================================================
+
+What is composition vs inheritance? Which is better and why?
+
 Inheritance = IS-A
 Composition = HAS-A
 Composition means building something by combining smaller parts (behaviors).One object uses or contains other objects (instead of inheriting).
+
 const canEat = {
     eat() {
         console.log("Eating");
@@ -347,7 +374,7 @@ class Engine {
 
 class Car {
     constructor() {
-        this.engine = new Engine(); // composition
+        this.engine = new Engine();  composition
     }
 
     startCar() {
@@ -359,11 +386,8 @@ const car = new Car();
 car.startCar();
 
 More flexible
-
 Easier to change
-
 Less complicated
-
 Avoids tight coupling (objects depend less on each other)
 Inheritance
 
@@ -383,37 +407,67 @@ class Dog extends Animal {
 const d = new Dog();
 d.eat();  // inherited
 d.bark();
+
+==============================================================================================================================
+
 What is tight coupling vs loose coupling?
 
+==============================================================================================================================
+
 What is SOLID principles? Name them.
+
 SOLID is a set of 5 design principles used in OOP to write clean, maintainable, and scalable code.
-The 5 SOLID Principles
-1. S — Single Responsibility Principle (SRP)
- A class should have only one reason to change
- It should do only one job
-Example idea:
-User class should not handle database + UI + logic together
+
+1. S — Single Responsibility Principle (SRP): One class = One job
+A class should have only one reason to change.
+Each class or module should do one thing only. If a class handles both user authentication and email sending, those are two responsibilities — split them up.
+
+class User {   Bad
+  saveToDB() {}
+  showUI() {}
+  calculateAge() {}
+}    
+
+
+class User {
+  constructor(name) {
+    this.name = name;
+  }
+}
+
+class UserDB {
+  save(user) {}
+}
+
+class UserUI {
+  show(user) {}
+}
+
 
 2 — Open/Closed Principle (OCP)
 
 Code should be open for extension but closed for modification
-You should add new features without changing existing code
+You should add new features without changing existing code.
 
-3. L — Liskov Substitution Principle (LSP)
-4.  Child classes should be able to replace parent classes without breaking the app
+3. L — Liskov Substitution Principle (LSP) : Child should work like parent
+Child classes should be able to replace parent classes without breaking the app
 If a parent class works, child class should also work correctly in its place
 
 4. I — Interface Segregation Principle (ISP)
-
 Don’t force a class to implement methods it doesn’t use
 Split large interfaces into smaller, specific ones
+Don't force a class to use methods it doesn't need. Keep interfaces small and focused.
+
 
 5. D — Dependency Inversion Principle (DIP)
-
 Depend on abstractions (interfaces), not on concrete implementations
 High-level modules should not depend on low-level modules directly
+Write your code against a general idea (interface), not a specific tool. That way you can swap tools later without rewriting everything.
+
+==============================================================================================================================
 
 Explain Single Responsibility Principle with example.
+
 A class should have only one responsibility and only one reason to change.
 ❌ Wrong idea:
 One class doing multiple jobs (e.g., logic + database + logging)
@@ -435,12 +489,18 @@ class EmailService {
     }
 }
 
+
+==============================================================================================================================
+
 What is Dependency Injection?
+
+==============================================================================================================================
 
 What is method overriding and why use it?
 
 Method overriding happens when a child class provides its own implementation of a method that already exists in the parent class.
 The method name stays the same, but the behavior is changed in the child class.
+
 class Animal {
     speak() {
         console.log("Animal makes a sound");
@@ -456,33 +516,85 @@ class Dog extends Animal {
 const d = new Dog();
 d.speak();
 
-What is static keyword?
-Static methods belong to class, not object (mean we call them with out make the object of that class).
-class person {
-static name (){
-console.log("sameer)
-}
-}
-person.name()
-What is this keyword?
-Refers to the current object context.
-class Person {
-constructor (name){
-this.name = name
-}
-show (){
-console.log(this.name)
-}
-}
-const p= new Person("sameer")
+==============================================================================================================================
 
+What is static keyword?
+
+Static methods belong to class, not object (mean we call them with out make the object of that class).
+
+class MathHelper {
+  static add(a, b) {
+    return a + b;
+  }
+}
+
+console.log(MathHelper.add(2, 3));  5 
+
+ ❌ Wrong
+ const obj = new MathHelper();
+ obj.add(2,3); ERROR
+
+==============================================================================================================================
+
+What is this keyword?
+
+Refers to the current object context. (object data)
+
+class Person {
+  constructor(name) {
+    this.name = name;
+  }
+
+  show() {
+    console.log(this.name);
+  }
+}
+
+const p = new Person("Sameer");
+p.show();  Sameer
+
+==============================================================================================================================
 
 What is access modifier (public, private, protected)?
 
+1. Public: Accessible everywhere
+2. Private (#): Accessible only inside the class
+3. Protected (_): Accessible in class + child class (in JS it's just convention)
+
+class Parent {
+  publicVar = "Public";       everywhere
+  _protectedVar = "Protected";  convention
+  #privateVar = "Private";    ❌ only inside class
+
+  showPrivate() {
+    return this.#privateVar;  access inside class
+  }
+}
+
+class Child extends Parent {
+  show() {
+    console.log(this.publicVar);      
+    console.log(this._protectedVar);  
+
+    console.log(this.#privateVar); ❌ ERROR
+
+    console.log(this.showPrivate());  
+  }
+}
+
+const obj = new Child();
+obj.show();
+
+==============================================================================================================================
+
 What is object cloning / copying?
+
 Object cloning (copying) means creating a duplicate of an object so that you can use it independently without affecting the original object.
+
 Types of Copying
+
 1. Shallow Copy
+
 Copies only the top-level properties. Nested objects are still shared (same reference)
 const obj1 = {
     name: "Sameer",
@@ -496,10 +608,11 @@ const obj2 = { ...obj1 };
 obj2.name = "Ali";
 obj2.address.city = "Karachi";
 
-console.log(obj1.name); // Sameer ✅ (independent)
-console.log(obj1.address.city); // Karachi ❌ (shared reference)
+console.log(obj1.name); Sameer 
+console.log(obj1.address.city); Karachi ❌ (shared reference)
 
-Deep Copy
+2. Deep Copy
+
 Copies everything recursively. No shared references
 const obj1 = {
     name: "Sameer",
@@ -512,12 +625,14 @@ const obj2 = JSON.parse(JSON.stringify(obj1));
 
 obj2.address.city = "Karachi";
 
-console.log(obj1.address.city); // Lahore ✅ (independent)
+console.log(obj1.address.city);  Lahore  
+
+==============================================================================================================================
 
 What is abstraction vs encapsulation?
+
 Abstraction focuses on hiding complexity, while encapsulation focuses on hiding data.
 
-Abstraction: Shows only essential features and hides how something works
 Encapsulation: Protects data by restricting direct access and controlling it through methods
 In one line:
 Abstraction = hiding implementation
@@ -537,7 +652,7 @@ const myCar = new Car();
 myCar.start();
 Encapsulation = hiding data
 class BankAccount {
-  #balance = 0; // private variable
+  #balance = 0;  private variable
 
   deposit(amount) {
     if (amount > 0) {
@@ -553,12 +668,16 @@ class BankAccount {
 const account = new BankAccount();
 
 account.deposit(100);
-console.log(account.getBalance()); // 100
+console.log(account.getBalance());  100
 
-// ❌ Not allowed
-// console.log(account.#balance); // SyntaxError
+ ❌ Not allowed
+ console.log(account.#balance);  SyntaxError
+ 
+==============================================================================================================================
 
 Can we achieve abstraction without abstract classes? How?
+
+==============================================================================================================================
 
 What is interface, and why use it?
 An interface is a contract that defines what methods a class should have, without providing the implementation.
@@ -566,11 +685,17 @@ An interface is a contract that defines what methods a class should have, withou
 In simple words:
 It tells what to do, but not how to do it.
 
+==============================================================================================================================
+
 Difference between interface vs abstract class (real use case)?
 
+==============================================================================================================================
+
 What is constructor chaining?
+
 Constructor chaining is the process of calling one constructor from another constructor to reuse initialization logic.
 In class inheritance, constructor chaining happens using super().
+
 class Animal {
   constructor(name) {
     this.name = name;
@@ -580,7 +705,7 @@ class Animal {
 
 class Dog extends Animal {
   constructor(name, breed) {
-    super(name); // calls parent constructor
+    super(name); calls parent constructor
     this.breed = breed;
     console.log("Dog constructor");
   }
@@ -589,12 +714,21 @@ class Dog extends Animal {
 const d = new Dog("Tommy", "Labrador");
 console.log(d);
 
+==============================================================================================================================
+
 Can we overload constructors? Explain.
-Constructor overloading is supported in languages like Java, C++, and C# through multiple constructors with different parameter lists, but JavaScript does not support it and instead uses default parameters or conditional logic.”
+
+Constructor overloading is supported in languages like Java, C++, and C# through multiple constructors with different parameter lists, but JavaScript does not support it and instead uses default parameters or conditional logic.
+
+==============================================================================================================================
 
 What is runtime polymorphism?
 
+==============================================================================================================================
+
 What is upcasting and downcasting?
+
+==============================================================================================================================
 
 What is the use of super keyword?
 The super keyword is used in classes to refer to the parent (base) class.
@@ -603,6 +737,7 @@ It is mainly used for two purposes:
 
 Calling the parent class constructor
 Accessing parent class methods
+
 class Animal {
   constructor(name) {
     this.name = name;
@@ -611,7 +746,7 @@ class Animal {
 
 class Dog extends Animal {
   constructor(name, breed) {
-    super(name); // calls parent constructor
+    super(name);  calls parent constructor
     this.breed = breed;
   }
 }
@@ -619,15 +754,58 @@ class Dog extends Animal {
 const d = new Dog("Tommy", "Labrador");
 console.log(d);
 
+==============================================================================================================================
+
 What is final keyword (variable, method, class)?
-The final keyword is used to restrict modification: a final variable cannot be reassigned, a final method cannot be overridden, and a final class cannot be extended.”
+
+The final keyword is used to restrict modification: a final variable cannot be reassigned, a final method cannot be overridden, and a final class cannot be extended.
+
+==============================================================================================================================
 
 What problem does abstraction solve in real-world apps?
 
+==============================================================================================================================
+
 What is interface segregation principle?
-Explain real-world use of polymorphism in backend systems
+
+==============================================================================================================================
+
+Explain real-world use of polymorphism in backend systems?
+
+class Logger {
+  log(message) {}
+}
+
+class FileLogger extends Logger {
+  log(message) {
+    console.log("Saving to file:", message);
+  }
+}
+
+class DBLogger extends Logger {
+  log(message) {
+    console.log("Saving to database:", message);
+  }
+}
+
+==============================================================================================================================
+
 What happens if multiple classes implement same interface?
+
+==============================================================================================================================
+
 What is immutability? Why is it important?
+
+Immutability means not modifying existing data but creating new copies. It helps in writing predictable, bug-free, and maintainable code.
+let arr = [1, 2, 3];
+
+❌ mutable
+arr.push(4);
+✅ immutable
+let newArr = [...arr, 4];
+
+==============================================================================================================================
+
 What design pattern have you used? (e.g., Singleton, Factory)
 How does loose coupling improve scalability?
 What is interface-based design?
@@ -640,11 +818,16 @@ Hiding → same static method name, child hides parent method
 
 What is diamond problem in OOP?
 
+==============================================================================================================================
+
 How does JavaScript handle OOP differently from Java?
 
+==============================================================================================================================
+
 What are getters and setters? Why use them?
+
 Getters and setters are special methods in JavaScript used to read (get) and update (set) object properties in a controlled way. They are defined using the get and set keywords. Instead of being called like normal functions, they are accessed like properties. The getter automatically returns a value when a property is read, and the setter automatically sets a value when a property is assigned. This allows developers to control, validate, and manage data while keeping a clean and simple interface.
-normal fun 
+
 const user = {
     name: "Sameer",
     getName() {
@@ -652,7 +835,7 @@ const user = {
     }
 };
 
-console.log(user.getName()); // ✅ must call ()
+console.log(user.getName());   must call ()
 get and set
 class User {
     constructor(name) {
@@ -670,18 +853,24 @@ class User {
 
 const user = new User("Sameer");
 console.log(user.name); 
-// Setter in action (auto runs)
+etter in action (auto runs)
 user.fullName = "John Doe";
-// ✅ automatically calls getter// ✅ auto-executes (no ())
+automatically calls getter , auto-executes (no ())
+ 
 Why Use Them?
  Validation
  Encapsulation
  Clean API
  Computed values
 
+==============================================================================================================================
+
 Explain real-world backend architecture using OOP concepts
-	What is a Static Method in JavaScript?
-	What is the difference between proto and prototype?
-	What is the purpose of the instanceof operator?
-	How do you implement multiple inheritance in JavaScript?
-	What are the different types of inheritance?
+
+What is the difference between proto and prototype?
+==============================================================================================================================
+What is the purpose of the instanceof operator?
+==============================================================================================================================
+How do you implement multiple inheritance in JavaScript?
+==============================================================================================================================
+What are the different types of inheritance?
