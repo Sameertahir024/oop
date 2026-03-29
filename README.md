@@ -74,6 +74,7 @@ Encapsolation : hiding the data and restriction the access
 Inheritence : child class use the properties of parent class
 
 Polymorphisn : same funtion (method) behave different in different class
+
 Abstraction : A key concept to hide internal detail and show only necessary things
 
 ==============================================================================================================================
@@ -107,8 +108,8 @@ class BankAccount {
 const acc = new BankAccount(1000);
 
 acc.deposit(500);
-console.log(acc.getBalance()); // 1500
-acc.#updateBalance(100); // ❌ ERROR
+console.log(acc.getBalance());  1500
+acc.#updateBalance(100);  ❌ ERROR
 
 ==============================================================================================================================
 
@@ -139,10 +140,8 @@ class Child extends Parent {
 
 const obj = new Child();
 obj.show();
-
+ 
 ==============================================================================================================================
-Types of inheritence?
-
 
 What is Polymorphism? Types?
 
@@ -203,6 +202,7 @@ Achieved by:Method Overriding Child class provides its own implementation of a p
 ==============================================================================================================================
 
 What is Abstraction?
+
 Abstraction is key concept in programming where hiding the complex implementation details and showing only the essential features to the user.
 it help you focus what a object can do not how to do.
 
@@ -680,14 +680,71 @@ Can we achieve abstraction without abstract classes? How?
 ==============================================================================================================================
 
 What is interface, and why use it?
+
+An interface is like a promise / contract.
+Any class that uses me MUST implement these methods.
 An interface is a contract that defines what methods a class should have, without providing the implementation.
 
+interface Animal {
+    void makeSound(); // only declaration
+}
 In simple words:
 It tells what to do, but not how to do it.
+does NOT have full code (usually)
+
+interface Payment {
+  pay(): void;
+}
+
+class JazzCash implements Payment {
+  pay(): void {
+    console.log("Paid using JazzCash");
+  }
+}
+
+class EasyPaisa implements Payment {
+  pay(): void {
+    console.log("Paid using EasyPaisa");
+  }
+}
+
+const p1: Payment = new JazzCash();
+p1.pay();
 
 ==============================================================================================================================
 
-Difference between interface vs abstract class (real use case)?
+What is abstract class (real use case)?
+An abstract class is a class that:
+
+cannot be created directly
+is used as a base (parent) class
+can have:
+abstract methods (no body)
+normal methods (with code)
+
+abstract class Animal {
+     abstract method (no body)
+  abstract makeSound(): void;
+
+     normal method
+  sleep() {
+    console.log("Sleeping...");
+  }
+}
+const a = new Animal();  ❌ Error
+
+Must extend it..
+class Dog extends Animal {
+  makeSound() {
+    console.log("Bark");
+  }
+}
+
+const d = new Dog();
+d.makeSound();  Bark
+d.sleep();      from parent
+
+An abstract class is a class that cannot be instantiated and is used as a base class. It can contain both abstract methods (without implementation) and concrete methods (with implementation), allowing code reuse and enforcing structure.
 
 ==============================================================================================================================
 
@@ -731,6 +788,7 @@ What is upcasting and downcasting?
 ==============================================================================================================================
 
 What is the use of super keyword?
+
 The super keyword is used in classes to refer to the parent (base) class.
 
 It is mainly used for two purposes:
@@ -792,6 +850,26 @@ class DBLogger extends Logger {
 
 What happens if multiple classes implement same interface?
 
+If multiple classes implement the same interface, each class must follow the same contract, but can provide its own implementation.
+
+ Interface = rule
+ Classes = different ways to follow the rule
+interface Payment {
+  pay(amount: number): void;
+}
+
+class JazzCash implements Payment {
+  pay(amount: number) {
+    console.log("Paid using JazzCash:", amount);
+  }
+}
+
+class EasyPaisa implements Payment {
+  pay(amount: number) {
+    console.log("Paid using EasyPaisa:", amount);
+  }
+}
+
 ==============================================================================================================================
 
 What is immutability? Why is it important?
@@ -807,20 +885,31 @@ let newArr = [...arr, 4];
 ==============================================================================================================================
 
 What design pattern have you used? (e.g., Singleton, Factory)
+
+==============================================================================================================================
+
 How does loose coupling improve scalability?
+
+==============================================================================================================================
 What is interface-based design?
+
+==============================================================================================================================
 Difference between aggregation vs composition
 Aggregation is a weak association where objects can exist independently, while composition is a strong association where one object owns and controls the lifecycle of another.
+
+==============================================================================================================================
 
 What is method hiding vs overriding?
 Overriding → same method, different behavior (instance)
 Hiding → same static method name, child hides parent method
 
-What is diamond problem in OOP?
+
+
+
 
 ==============================================================================================================================
 
-How does JavaScript handle OOP differently from Java?
+What is diamond problem in OOP?
 
 ==============================================================================================================================
 
@@ -865,12 +954,161 @@ Why Use Them?
 
 ==============================================================================================================================
 
-Explain real-world backend architecture using OOP concepts
-
 What is the difference between proto and prototype?
+
+A prototype is an internal object that every JavaScript object automatically receives. It allows objects to inherit properties and methods from a parent object.
+
+let obj = {};
+console.log(obj.__proto__);
+
+__proto__(Link point to prototype) is a hidden property of an object that points to its prototype (the parent object).
+
+Prototype chain?
+
+Every object has a prototype, and that prototype can also have its own prototype. This is called the prototype chain
+
+When you try to access a property or method:
+
+JavaScript first looks in the object itself.
+If not found, it checks the object's prototype.
+Then it checks the prototype’s prototype.
+This continues until it reaches null.
+
+
+Key Points
+__proto__ points to the prototype of an object.
+prototype is a property of constructor functions and classes.
+The prototype is used to define methods that can be shared across all instances.
+__proto__ is used internally to link objects in the prototype chain.
+
+
+class Student {
+  sayHi() {
+    console.log("Hello World");
+  }
+}
+
+const s = new Student();
+s.sayHi();
+
+Methods defined inside a class are automatically added to Student.prototype.
+Instances like s access these methods through their __proto__ link.
+
 ==============================================================================================================================
+
 What is the purpose of the instanceof operator?
+
+The instanceof operator is used to check whether an object is created from a specific constructor or class.
+It tells you if an object belongs to a particular class (or constructor function) in its prototype chain.
+
+class Person {}
+
+const p = new Person();
+
+console.log(p instanceof Person);  true
+
 ==============================================================================================================================
+
 How do you implement multiple inheritance in JavaScript?
+
 ==============================================================================================================================
+
 What are the different types of inheritance?
+
+1. Single Inheritance: One class inherits from one parent class.
+
+class Animal {
+  eat() {
+    console.log("Eating");
+  }
+}
+
+class Dog extends Animal {}
+
+const d = new Dog();
+d.eat();  inherited
+
+2. Multilevel Inheritance:  A class inherits from a class, which itself inherits from another class.
+
+class Animal {
+  eat() {
+    console.log("Eating...");
+  }
+}
+
+class Dog extends Animal {
+  bark() {
+    console.log("Barking...");
+  }
+}
+
+class Puppy extends Dog {
+  weep() {
+    console.log("Weeping...");
+  }
+}
+
+const puppy = new Puppy();
+puppy.eat();    from Animal
+puppy.bark();   from Dog
+puppy.weep();   own
+
+3. Hierarchical Inheritance: Multiple classes inherit from the same parent.
+
+ class Animal {
+  eat() {
+    console.log("Eating...");
+  }
+}
+
+class Dog extends Animal {
+  bark() {
+    console.log("Barking...");
+  }
+}
+
+class Cat extends Animal {
+  meow() {
+    console.log("Meowing...");
+  }
+}
+
+const dog = new Dog();
+const cat = new Cat();
+
+dog.eat();  from Animal
+cat.eat();  from Animal
+
+4. Multiple Inheritance (using Mixins in JS): A class inherits from more than one class.
+5. 
+const CanEat = {
+  eat() {
+    console.log("Eating...");
+  }
+};
+
+const CanWalk = {
+  walk() {
+    console.log("Walking...");
+  }
+};
+
+class Person {}
+
+Object.assign(Person.prototype, CanEat, CanWalk);
+
+const p = new Person();
+p.eat();
+p.walk();
+
+==============================================================================================================================
+
+Error vs Exception?
+
+-> A error is unexpected error that stop the program like divide by zero , network request fail , invalid json.
+Safely way to catch the excepition is to use try catch block.
+
+-> soemthing very wrong you usaully cannot fix in runtime.
+Mistake in code.
+You cannot recover with try catch block.
+You must fix code.
