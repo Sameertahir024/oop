@@ -52,18 +52,24 @@ Object oriented programming is the way to write code that revolve around the con
 Data (properties) what object has: color , model
 Function (action/actions) what object do : start() , stop()
 
-const car = {
-  color: "red",
-  model: 2025,
+public class Car
+{
+    public string Model { get; set; }
 
-  start() {
-    console.log("car start");
-  },
+    public Car(string model)
+    {
+        Model = model;
+    }
 
-  stop() {
-    console.log("car stop");
-  }
-};
+    public void Tell()
+    {
+        Console.WriteLine($"{Model} has started.");
+    }
+}
+
+Car myCar = new Car("Red");
+myCar.Tell();
+
 
 ==============================================================================================================================
 
@@ -83,64 +89,102 @@ What is Encapsulation? Give a real-world example.
 
 Encapsulation is the concept of wrapping(hinding) data (variables) and methods (functions) together in a single unit (class) and restricting direct access to some of the data.
 
+public class BankAccount
+{
+    // Data is PRIVATE — hidden from outside, can't be changed directly
+    private decimal balance;
 
-class BankAccount {
-  #balance;
-
-  constructor(balance) {
-    this.#balance = balance;
-  }
-
-  deposit(amount) {
-    this.#updateBalance(amount); // calling private method
-  }
-
-  #updateBalance(amount) {
-    if (amount > 0) {
-      this.#balance += amount;
+    public BankAccount(decimal initialBalance)
+    {
+        balance = initialBalance;
     }
-  }
 
-  getBalance() {
-    return this.#balance;
-  }
+    // Controlled way to READ the balance
+    public decimal GetBalance()
+    {
+        return balance;
+    }
+
+    // Controlled way to ADD money — with validation
+    public void Deposit(decimal amount)
+    {
+        if (amount <= 0)
+        {
+            Console.WriteLine("Deposit amount must be positive.");
+            return;
+        }
+        balance += amount;
+        Console.WriteLine($"Deposited {amount}. New balance: {balance}");
+    }
+
+    // Controlled way to REMOVE money — with validation
+    public void Withdraw(decimal amount)
+    {
+        if (amount > balance)
+        {
+            Console.WriteLine("Insufficient balance.");
+            return;
+        }
+        balance -= amount;
+        Console.WriteLine($"Withdrew {amount}. New balance: {balance}");
+    }
 }
-const acc = new BankAccount(1000);
-
-acc.deposit(500);
-console.log(acc.getBalance());  1500
-acc.#updateBalance(100);  ❌ ERROR
 
 ==============================================================================================================================
 
 What is Inheritance? Why do we use it?
 
 Inheritance is a concept where one class (child) acquires(take) the properties and methods of another class (parent or super-class).
+// Parent class (base class)
+public class Animal
+{
+    public string Name { get; set; }
 
-class Parent {
-  #privateVar = "PRIVATE";    ❌ not inherited
-  _protectedVar = "PROTECTED";   inherited (by convention)
-  publicVar = "PUBLIC";      inherited
+    public Animal(string name)
+    {
+        Name = name;
+    }
 
-  getPrivate() {
-    return this.#privateVar;  access private via method
-  }
+    public void Eat()
+    {
+        Console.WriteLine($"{Name} is eating.");
+    }
+
+    public void Sleep()
+    {
+        Console.WriteLine($"{Name} is sleeping.");
+    }
 }
 
-class Child extends Parent {
-  show() {
-    console.log(this.publicVar);       works
-    console.log(this._protectedVar);   works
+// Child class — inherits from Animal
+public class Dog : Animal
+{
+    public string Breed { get; set; }
 
-    console.log(this.#privateVar); ❌ ERROR
+    // base(name) sends "name" up to the parent's constructor
+    public Dog(string name, string breed) : base(name)
+    {
+        Breed = breed;
+    }
 
-    console.log(this.getPrivate());   works (via method)
-  }
+    public void Bark()
+    {
+        Console.WriteLine($"{Name} ({Breed}) is barking.");
+    }
 }
 
-const obj = new Child();
-obj.show();
- 
+// Another child class — also inherits from Animal
+public class Cat : Animal
+{
+    public Cat(string name) : base(name)
+    {
+    }
+
+    public void Meow()
+    {
+        Console.WriteLine($"{Name} is meowing.");
+    }
+}
 ==============================================================================================================================
 
 What is Polymorphism? Types?
@@ -201,29 +245,56 @@ Achieved by:Method Overriding Child class provides its own implementation of a p
 
 ==============================================================================================================================
 
-What is Abstraction?
+What is Abstraction? Abstract class and abstract keywords?
 
 Abstraction is key concept in programming where hiding the complex implementation details and showing only the essential features to the user.
 it help you focus what a object can do not how to do.
 
-class Car {
-    startEngine() {
-        this.#checkEngine();
-        this.#fuelInjection();
-        console.log("Car started");
+// Abstract class — defines WHAT must be done, hides HOW
+public abstract class Payment
+{
+    public string CustomerName { get; set; }
+
+    public Payment(string customerName)
+    {
+        CustomerName = customerName;
     }
 
-    #checkEngine() {
-        console.log("Checking engine...");
-    }
+    // Abstract method — no body here, just says "every payment type must have this"
+    public abstract void ProcessPayment(decimal amount);
 
-    #fuelInjection() {
-        console.log("Injecting fuel...");
+    // Regular method — shared by all payment types
+    public void ShowReceipt(decimal amount)
+    {
+        Console.WriteLine($"Receipt: {CustomerName} paid {amount}");
     }
 }
 
-const car = new Car();
-car.startEngine();
+// Concrete class 1 — provides the HOW
+public class CreditCardPayment : Payment
+{
+    public CreditCardPayment(string customerName) : base(customerName) { }
+
+    public override void ProcessPayment(decimal amount)
+    {
+        // complex internal logic hidden from the user of this class
+        Console.WriteLine("Connecting to bank API...");
+        Console.WriteLine("Validating card...");
+        Console.WriteLine($"Charged {amount} to credit card.");
+    }
+}
+
+// Concrete class 2 — different HOW, same WHAT
+public class PayPalPayment : Payment
+{
+    public PayPalPayment(string customerName) : base(customerName) { }
+
+    public override void ProcessPayment(decimal amount)
+    {
+        Console.WriteLine("Connecting to PayPal servers...");
+        Console.WriteLine($"Charged {amount} via PayPal.");
+    }
+}
 
 ==============================================================================================================================
 
@@ -522,17 +593,18 @@ What is static keyword?
 
 Static methods belong to class, not object (mean we call them with out make the object of that class).
 
-class MathHelper {
-  static add(a, b) {
-    return a + b;
-  }
+cpublic class MathHelper
+{
+    // static method → belongs to the CLASS, not to any object
+    public static int Square(int number)
+    {
+        return number * number;
+    }
 }
+int result = MathHelper.Square(5);  // ✅ called directly on the class
+Console.WriteLine(result);          // 25
 
-console.log(MathHelper.add(2, 3));  5 
-
- ❌ Wrong
- const obj = new MathHelper();
- obj.add(2,3); ERROR
+// MathHelper obj = new MathHelper(); // ❌ not needed at all for static methods
 
 ==============================================================================================================================
 
@@ -540,51 +612,71 @@ What is this keyword?
 
 Refers to the current object context. (object data)
 
-class Person {
-  constructor(name) {
-    this.name = name;
-  }
+public class User
+{
+    private string name;
 
-  show() {
-    console.log(this.name);
-  }
+    // Constructor parameter has SAME name as the field
+    public User(string name)
+    {
+        this.name = name; // this.name = field, name = parameter
+    }
+
+    public void ShowName()
+    {
+        Console.WriteLine(this.name);
+    }
 }
-
-const p = new Person("Sameer");
-p.show();  Sameer
 
 ==============================================================================================================================
 
 What is access modifier (public, private, protected)?
 
-1. Public: Accessible everywhere
-2. Private (#): Accessible only inside the class
-3. Protected (_): Accessible in class + child class (in JS it's just convention)
+public class Animal
+{
+    public string Name { get; set; }      // public  → accessible everywhere
+    private int age;                      // private → accessible only in this class
+    protected string sound;               // protected → accessible in this class + child classes
 
-class Parent {
-  publicVar = "Public";       everywhere
-  _protectedVar = "Protected";  convention
-  #privateVar = "Private";    ❌ only inside class
+    public Animal(string name, int age, string sound)
+    {
+        Name = name;
+        this.age = age;
+        this.sound = sound;
+    }
 
-  showPrivate() {
-    return this.#privateVar;  access inside class
-  }
+    public void ShowInfo()
+    {
+        Console.WriteLine($"{Name} is {age} years old."); // age accessible here (same class)
+    }
 }
 
-class Child extends Parent {
-  show() {
-    console.log(this.publicVar);      
-    console.log(this._protectedVar);  
+public class Dog : Animal
+{
+    public Dog(string name, int age) : base(name, age, "Bark")
+    {
+    }
 
-    console.log(this.#privateVar); ❌ ERROR
-
-    console.log(this.showPrivate());  
-  }
+    public void MakeSound()
+    {
+        Console.WriteLine(sound); // ✅ works, protected is visible to child class
+    }
 }
 
-const obj = new Child();
-obj.show();
+class Program
+{
+    static void Main()
+    {
+        Dog myDog = new Dog("Rex", 3);
 
+        Console.WriteLine(myDog.Name);  // ✅ public — accessible
+        myDog.ShowInfo();               // ✅ public method — accessible
+        myDog.MakeSound();              // ✅ prints "Bark"
+
+        // myDog.age    → ❌ error, private not accessible outside class
+        // myDog.sound  → ❌ error, protected not accessible outside class (only inside child class code)
+    }
+}
 ==============================================================================================================================
 
 What is object cloning / copying?
